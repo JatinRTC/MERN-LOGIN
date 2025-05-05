@@ -18,7 +18,10 @@ import axios from "axios";
 import PaidIcon from '@mui/icons-material/Paid';
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import Confetti from 'react-confetti';
+import { useWindowSize } from 'react-use';
 
+// ✅ Validation Schema
 const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
     pancard: Yup.string()
@@ -32,8 +35,9 @@ const validationSchema = Yup.object({
 const PayloadDialogForm = () => {
     const [open, setOpen] = useState(true);
     const [submitted, setSubmitted] = useState(false);
-    const [isDisabled, setisDisabled] = useState(false);
+    const [isDisabled, setIsDisabled] = useState(false);
     const navigate = useNavigate();
+    const { width, height } = useWindowSize();
 
     const formik = useFormik({
         initialValues: {
@@ -44,7 +48,6 @@ const PayloadDialogForm = () => {
         validationSchema,
         onSubmit: async (values, { resetForm }) => {
             setSubmitted(true);
-
             try {
                 await axios.post('http://localhost:5000/congrats', {
                     Username: values.name,
@@ -75,7 +78,9 @@ const PayloadDialogForm = () => {
             maxWidth="sm"
             PaperProps={{
                 sx: {
-                    backgroundColor: submitted ? "#000" : undefined,
+                    backgroundColor: submitted ? "#000" : "#121212",
+                    borderRadius: 2,
+                    overflow: "hidden",
                 },
             }}
             BackdropProps={{
@@ -84,14 +89,65 @@ const PayloadDialogForm = () => {
                 },
             }}
         >
-            {!submitted ? (
+            {submitted ? (
                 <>
-                    <DialogTitle variant="h5" sx={{ backgroundColor: "#1e1e1e", color: "white ", fontWeight: 'bold', textAlign: "center" }}>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            height: "100vh",
+                            overflow: "hidden",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: "#000",
+                        }}
+                    >
+                        <Confetti width={width} height={height} numberOfPieces={300} recycle={false} />
+
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ type: "spring", stiffness: 120, damping: 10 }}
+                            style={{ display: "inline-block" }}
+                        >
+                            <Paper
+                                elevation={6}
+                                sx={{
+                                    p: 3,
+                                    backgroundColor: "#1e1e1e",
+                                    borderRadius: 2,
+                                    textAlign: "center",
+                                    color: "lightgreen",
+                                    boxShadow: "0 0 20px 5px rgba(0, 255, 0, 0.6)",
+                                    maxWidth: "400px",
+                                    mx: "auto",
+                                }}
+                            >
+                                <Typography variant="h6" gutterBottom>
+                                    🎉 Congratulations!
+                                </Typography>
+                                <Typography variant="body2">
+                                    Your details have been successfully submitted.
+                                </Typography>
+                            </Paper>
+                        </motion.div>
+                    </Box>
+                </>
+            ) : (
+                <>
+                    <DialogTitle
+                        sx={{
+                            backgroundColor: "#1e1e1e",
+                            color: "white",
+                            fontWeight: 'bold',
+                            textAlign: "center"
+                        }}
+                    >
                         <PaidIcon sx={{ fontSize: 23, color: "lightgreen", mr: 0.7 }} />
                         Payout
                     </DialogTitle>
                     <form onSubmit={formik.handleSubmit}>
-                        <Box sx={{ backgroundColor: "#121212", p: 3, boxShadow: "0 0 20px 5px rgba(0, 255, 0, 0.6)"}}>
+                        <Box sx={{ backgroundColor: "#121212", p: 3, boxShadow: "0 0 20px 5px rgba(0, 255, 0, 0.6)" }}>
                             <DialogContent>
                                 <TextField
                                     fullWidth
@@ -156,8 +212,8 @@ const PayloadDialogForm = () => {
                                         }
                                     }}
                                 />
-                                <Stack display="flex" direction="row" alignItems="center" onClick={() => setisDisabled(!isDisabled)}>
-                                    <Checkbox defaultChecked sx={{ color: "lightgreen" }} />
+                                <Stack direction="row" alignItems="center" onClick={() => setIsDisabled(!isDisabled)}>
+                                    <Checkbox checked={isDisabled} sx={{ color: "lightgreen" }} />
                                     <Typography variant="body2" color="#ffffff">
                                         I agree to the Terms and Conditions
                                     </Typography>
@@ -167,44 +223,13 @@ const PayloadDialogForm = () => {
                                 <Button variant="contained" sx={{ backgroundColor: "#c62828", "&:hover": { backgroundColor: "#b71c1c" } }} onClick={handleClose}>
                                     Cancel
                                 </Button>
-                                <Button type="submit" variant="contained" sx={{ backgroundColor: "green", "&:hover": { backgroundColor: "#2e7d32" } }} disabled={isDisabled}>
+                                <Button type="submit" variant="contained" sx={{ backgroundColor: "green", "&:hover": { backgroundColor: "#2e7d32" } }} disabled={!isDisabled}>
                                     Submit
                                 </Button>
                             </DialogActions>
                         </Box>
                     </form>
                 </>
-            ) : (
-                <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", stiffness: 120, damping: 10 }}
-                >
-                    <Paper
-                        elevation={6}
-                        sx={{
-                            p: 4,
-                            backgroundColor: "#1e1e1e",
-                            borderRadius: 3,
-                            textAlign: "center",
-                            color: "lightgreen",
-                        }}
-                    >
-                        <Typography variant="h4" gutterBottom>
-                            🎉 Congratulations!
-                        </Typography>
-                        <Typography variant="body1">
-                            Your Details has been successfully submitted.
-                        </Typography>
-                        <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                            style={{ marginTop: "20px", fontSize: "2rem" }}
-                        >
-                            💸
-                        </motion.div>
-                    </Paper>
-                </motion.div>
             )}
         </Dialog>
     );
