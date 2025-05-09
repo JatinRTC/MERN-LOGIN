@@ -5,6 +5,7 @@ const User = require('./model/users');
 const Value = require('./model/value');
 const Payload = require('./model/payload');
 const Congrats = require('./model/congrats');
+const Balance  = require('./model/putBalance');
 
 const app = express();
 const port = 5000;
@@ -173,6 +174,32 @@ app.post('/congrats', async (req, res) => {
       }
   });
 
+
+app.post('/putBalance', async (req, res) => {
+    try {
+      const withdrawal = new Balance(req.body);
+      await withdrawal.save();
+      res.status(201).json(Balance);
+    } catch (err) {
+      res.status(500).json({ message: 'Error saving data', error: err });
+    }
+  });
+
+  app.get('/putBalance', async (req, res) => {
+    const { email } = req.query;
+  
+    if (!email) return res.status(400).json({ message: 'Email is required' });
+  
+    try {
+      const data = await Balance.find({ email }).sort({ date: -1 });
+      res.json(data);
+    } catch (err) {
+      res.status(500).json({ message: 'Error fetching data', error: err });
+    }
+  });
+  
+  
+  
 
 app.listen(port, () => {
     console.log(`Rendering of pages is ${port}`);

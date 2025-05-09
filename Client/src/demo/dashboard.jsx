@@ -39,6 +39,10 @@ const Dashboard = () => {
         navigate('/');
     };
 
+    const handleShow = () => {
+        navigate('/history');
+    }
+
     useEffect(() => {
         const fetchEnableStatus = async () => {
             try {
@@ -100,7 +104,7 @@ const Dashboard = () => {
                             component="div"
                             sx={{ fontWeight: 'bold', color: '#4b5f4b', mb: 2 }}
                         >
-                            Account Summary 
+                            Account Summary
                         </Typography>
                         <Typography
                             variant="subtitle1"
@@ -128,6 +132,8 @@ const Dashboard = () => {
                             <PriceChangeIcon sx={{ mr: 1 }} />
                             Payout
                         </Button>
+                        <Typography  variant="body1" color="white" mt={2} sx={{ textDecoration: 'underline', cursor: 'pointer' }} textAlign={"right"} onClick={() => handleShow()}
+                        >Withdrawal History</Typography>
                     </CardContent>
                 </Card>
             </Box>
