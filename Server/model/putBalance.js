@@ -1,22 +1,22 @@
 const mongoose = require('mongoose');
 
 const withdrawalSchema = new mongoose.Schema({
-  name: {
-   type: String,
+    name: {
+        type: String,
     },
-  amount: {
-    type: Number,
+    amount: {
+        type: Number,
     },
-  date: {
-    type: Date,
+    date: {
+        type: Date,
     },
-  method: {
-    type :String,
+    method: {
+        type: String,
     },
-  status: {
-    type :String,
+    status: {
+        type: String,
     },
-  email: {
+    email: {
         type: String,
         required: true
     },

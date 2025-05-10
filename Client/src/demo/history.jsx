@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import axios from 'axios';
-import Img from '../leverageX.png'; // Replace with your logo/image
+import Img from '../leverageX.png';
 
 const WithdrawalHistory = () => {
   const email = localStorage.getItem('userEmail');
@@ -33,13 +33,14 @@ const WithdrawalHistory = () => {
 
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
-      <Typography variant="h5" align="center" color="green" gutterBottom>
+      <Typography variant="h5" align="center" color="green" fontWeight="bold" gutterBottom>
         Withdrawal History
       </Typography>
-      <Paper elevation={3} sx={{ p: 2 }}>
+
+      <Paper elevation={3} sx={{ p: 2, backgroundColor: 'black' }}>
         {history.length === 0 ? (
-          <Typography variant="body1" align="center" color="text.secondary">
-            No withdrawal history found 
+          <Typography variant="body1" align="center" color="grey.500">
+            No withdrawal history found
           </Typography>
         ) : (
           <List>
@@ -50,10 +51,17 @@ const WithdrawalHistory = () => {
                     <Avatar src={Img} sx={{ width: 40, height: 40, border: 1 }} />
                   </ListItemAvatar>
                   <ListItemText
-                    primary={`${name} • ₹${Number(amount).toLocaleString()} • ${method}`}
+                    primary={
+                      <Typography variant="subtitle1"  color="white">
+                        <Box component="span" color="green">
+                          {name}
+                        </Box>{' '}
+                        • ₹{Number(amount).toLocaleString()} • {method}
+                      </Typography>
+                    }
                     secondary={
                       <>
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography variant="body2" color="grey.400">
                           Received on {new Date(date).toLocaleString()}
                         </Typography>
                         <Chip
@@ -67,7 +75,14 @@ const WithdrawalHistory = () => {
                     }
                   />
                 </ListItem>
-                <Divider variant="inset" component="li" />
+                <Divider
+                  component="li"
+                  sx={{
+                    borderColor: 'white',
+                    borderBottomWidth: 2,
+                    my: 1,
+                  }}
+                />
               </React.Fragment>
             ))}
           </List>
